@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const db = require("./db/db.json");
+const fs = require("fs");
 
 const PORT = process.env.port || 3001;
 
@@ -19,7 +20,22 @@ app.get("/notes", (req, res) => {
 //     res.status(404).sendFile(path.join(__dirname, "/public/index.html"));
 // });
 
-app.get('/api', (req, res) => res.json(db));
+app.get("/api/notes", (req, res) => res.json(db))
+
+
+app.post("/api/notes", (req, res) => {
+    fs.readFile("./db/db.json", "utf8", (data) => {
+        const newNote = req.body;
+        const parsedNote = JSON.parse(data);
+        parsedNote.push(newNote);
+        fs.writeFile(
+            "./db/db.json",
+            JSON.stringify(newNote)
+        )
+
+    })
+    
+})
 
 
 
